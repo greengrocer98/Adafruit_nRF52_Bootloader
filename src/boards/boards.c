@@ -84,6 +84,9 @@ void board_init(void) {
   #if LEDS_NUMBER > 1
   led_pwm_init(LED_SECONDARY, LED_SECONDARY_PIN);
   #endif
+  #if LEDS_NUMBER > 2
+  led_pwm_init(LED_TERTIARY, LED_TERTIARY_PIN);
+  #endif
 #endif
 
 #if defined(LED_NEOPIXEL) || defined(LED_RGB_RED_PIN) || defined(LED_APA102_CLK)
@@ -361,6 +364,9 @@ static uint32_t primary_cycle_length;
 #ifdef LED_SECONDARY_PIN
 static uint32_t secondary_cycle_length;
 #endif
+#ifdef LED_TERTIARY_PIN
+static uint32_t tertiary_cycle_length;
+#endif
 
 void led_tick(void) {
   uint32_t millis = _systick_count;
@@ -382,11 +388,24 @@ void led_tick(void) {
   if (cycle > half_cycle) {
       cycle = secondary_cycle_length - cycle;
   }
-  duty_cycle = 0x8f * cycle / half_cycle;
+  duty_cycle = 0x4f * cycle / half_cycle;
   #if LED_STATE_ON == 1
   duty_cycle = 0xff - duty_cycle;
   #endif
   led_pwm_duty_cycle(LED_SECONDARY, duty_cycle);
+  #endif
+
+  #ifdef LED_TERTIARY_PIN
+  cycle = millis % tertiary_cycle_length;
+  half_cycle = tertiary_cycle_length / 2;
+  if (cycle > half_cycle) {
+      cycle = tertiary_cycle_length - cycle;
+  }
+  duty_cycle = 0x4f * cycle / half_cycle;
+  #if LED_STATE_ON == 1
+  duty_cycle = 0xff - duty_cycle;
+  #endif
+  led_pwm_duty_cycle(LED_TERTIARY, duty_cycle);
   #endif
 }
 
@@ -400,22 +419,46 @@ void led_state(uint32_t state) {
     case STATE_USB_MOUNTED:
       new_rgb_color = 0x00ff00;
       primary_cycle_length = 3000;
+      #ifdef LED_SECONDARY_PIN
+      secondary_cycle_length = 3000;
+      #endif
+      #ifdef LED_TERTIARY_PIN
+      tertiary_cycle_length = 3000;
+      #endif
       break;
 
     case STATE_BOOTLOADER_STARTED:
     case STATE_USB_UNMOUNTED:
       new_rgb_color = 0xff0000;
       primary_cycle_length = 300;
+      #ifdef LED_SECONDARY_PIN
+      secondary_cycle_length = 300;
+      #endif
+      #ifdef LED_TERTIARY_PIN
+      tertiary_cycle_length = 300;
+      #endif
       break;
 
     case STATE_WRITING_STARTED:
       temp_color = 0xff0000;
       primary_cycle_length = 100;
+      #ifdef LED_SECONDARY_PIN
+      secondary_cycle_length = 200;
+      #endif
+      #ifdef LED_TERTIARY_PIN
+      tertiary_cycle_length = 300;
+      #endif
       break;
 
     case STATE_WRITING_FINISHED:
       // Empty means to unset any temp colors.
       primary_cycle_length = 3000;
+      #ifdef LED_SECONDARY_PIN
+      secondary_cycle_length = 3000;
+      #endif
+      #ifdef LED_TERTIARY_PIN
+      tertiary_cycle_length = 3000;
+      #endif
       break;
 
     case STATE_BLE_CONNECTED:
@@ -429,8 +472,8 @@ void led_state(uint32_t state) {
 
     case STATE_BLE_DISCONNECTED:
       new_rgb_color = 0xff00ff;
-      #ifdef LED_SECONDARY_PIN
-      secondary_cycle_length = 300;
+      #ifdef LED_TERTIARY_PIN
+      tertiary_cycle_length = 300;
       #else
       primary_cycle_length = 300;
       #endif

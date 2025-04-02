@@ -49,6 +49,7 @@
 #define LED_PRIMARY 0
 // The secondary LED, when available, is usually blue.
 #define LED_SECONDARY 1
+#define LED_TERTIARY 2
 
 // Its more common for LEDs to be sinking to the MCU pin. Setting is only for individual LEDs, not
 // RGB LEDs.

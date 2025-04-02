@@ -39,6 +39,9 @@
 # VSCode files
 .vscode/
 
+# Python venv
+.venv
+
 # Debug files
 *.dSYM/
 *.su
