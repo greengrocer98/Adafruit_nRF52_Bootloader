@@ -79,14 +79,17 @@ void board_init(void) {
   NRFX_DELAY_US(100); // wait for the pin state is stable
 
 #if LEDS_NUMBER > 0
+  // enable leds ldo
+  nrf_gpio_cfg_output(LDO_PIN);
+  nrf_gpio_pin_write(LDO_PIN, 1);
   // use PMW0 for LED RED
   led_pwm_init(LED_PRIMARY, LED_PRIMARY_PIN);
-  #if LEDS_NUMBER > 1
+#if LEDS_NUMBER > 1
   led_pwm_init(LED_SECONDARY, LED_SECONDARY_PIN);
-  #endif
-  #if LEDS_NUMBER > 2
+#endif
+#if LEDS_NUMBER > 2
   led_pwm_init(LED_TERTIARY, LED_TERTIARY_PIN);
-  #endif
+#endif
 #endif
 
 #if defined(LED_NEOPIXEL) || defined(LED_RGB_RED_PIN) || defined(LED_APA102_CLK)
@@ -373,10 +376,11 @@ void led_tick(void) {
 
   uint32_t cycle = millis % primary_cycle_length;
   uint32_t half_cycle = primary_cycle_length / 2;
+  uint16_t brightness = 0xf0;
   if (cycle > half_cycle) {
     cycle = primary_cycle_length - cycle;
   }
-  uint16_t duty_cycle = 0x4f * cycle / half_cycle;
+  uint16_t duty_cycle = brightness * cycle / half_cycle;
   #if LED_STATE_ON == 1
   duty_cycle = 0xff - duty_cycle;
   #endif
@@ -388,7 +392,7 @@ void led_tick(void) {
   if (cycle > half_cycle) {
       cycle = secondary_cycle_length - cycle;
   }
-  duty_cycle = 0x4f * cycle / half_cycle;
+  duty_cycle = brightness * cycle / half_cycle;
   #if LED_STATE_ON == 1
   duty_cycle = 0xff - duty_cycle;
   #endif
@@ -401,7 +405,7 @@ void led_tick(void) {
   if (cycle > half_cycle) {
       cycle = tertiary_cycle_length - cycle;
   }
-  duty_cycle = 0x4f * cycle / half_cycle;
+  duty_cycle = brightness * cycle / half_cycle;
   #if LED_STATE_ON == 1
   duty_cycle = 0xff - duty_cycle;
   #endif

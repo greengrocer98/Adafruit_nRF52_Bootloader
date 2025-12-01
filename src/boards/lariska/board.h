@@ -22,35 +22,38 @@
  * THE SOFTWARE.
  */
 
-#ifndef _KEYATURA_H
-#define _KEYATURA_H
+#ifndef _LARISKA_H
+#define _LARISKA_H
+
 
 #define _PINNUM(port, pin)    ((port)*32 + (pin))
 
-#define UICR_REGOUT0_VALUE UICR_REGOUT0_VOUT_3V3
+// #define UICR_REGOUT0_VALUE UICR_REGOUT0_VOUT_3V3
+#define ENABLE_DCDC_1 1
 
 /*------------------------------------------------------------------*/
 /* LED
  *------------------------------------------------------------------*/
-#define LEDS_NUMBER        3
-#define LED_PRIMARY_PIN    _PINNUM(0, 31)
-#define LED_SECONDARY_PIN  _PINNUM(0, 29)
-#define LED_TERTIARY_PIN   _PINNUM(0, 2)
+#define LEDS_NUMBER        1
+#define LDO_PIN            _PINNUM(1, 02)
+#define LED_PRIMARY_PIN    _PINNUM(0, 16) // Red
+// #define LED_SECONDARY_PIN  _PINNUM(0, 15) // Green
+// #define LED_TERTIARY_PIN   _PINNUM(0, 14) // Blue
 #define LED_STATE_ON       1
 
 /*------------------------------------------------------------------*/
 /* BUTTON
  *------------------------------------------------------------------*/
-#define BUTTONS_NUMBER    2  // none connected at all
-#define BUTTON_1          _PINNUM(0, 18)  // unusable: RESET
-#define BUTTON_2          _PINNUM(0, 19)  // no connection
+#define BUTTONS_NUMBER    2 
+#define BUTTON_1          _PINNUM(1, 15)  // DFU
+#define BUTTON_2          _PINNUM(0, 18)  // FRST
 #define BUTTON_PULL       NRF_GPIO_PIN_PULLUP
 
 //--------------------------------------------------------------------+
 // BLE OTA
 //--------------------------------------------------------------------+
 #define BLEDIS_MANUFACTURER  "GGrocer"
-#define BLEDIS_MODEL         "keyatura"
+#define BLEDIS_MODEL         "lariska"
 
 //--------------------------------------------------------------------+
 // USB
@@ -59,9 +62,9 @@
 #define USB_DESC_UF2_PID       0x00B3
 #define USB_DESC_CDC_ONLY_PID  0x00B3
 
-#define UF2_PRODUCT_NAME  "keyatura"
-#define UF2_VOLUME_LABEL  "KEYATURA"
-#define UF2_BOARD_ID      "nRF52840-nicenano"
+#define UF2_PRODUCT_NAME  "lariska"
+#define UF2_VOLUME_LABEL  "lariska"
+#define UF2_BOARD_ID      "nRF52840-vgn"
 #define UF2_INDEX_URL     "https://github.com/greengrocer98/Adafruit_nRF52_Bootloader"
 
-#endif // _KEYATURA_H
+#endif // _LARISKA_H
