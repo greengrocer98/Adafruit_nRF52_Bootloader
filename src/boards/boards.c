@@ -79,9 +79,11 @@ void board_init(void) {
   NRFX_DELAY_US(100); // wait for the pin state is stable
 
 #if LEDS_NUMBER > 0
+#ifdef LDO_PIN
   // enable leds ldo
   nrf_gpio_cfg_output(LDO_PIN);
   nrf_gpio_pin_write(LDO_PIN, 1);
+#endif
   // use PMW0 for LED RED
   led_pwm_init(LED_PRIMARY, LED_PRIMARY_PIN);
 #if LEDS_NUMBER > 1
